@@ -76,6 +76,22 @@ nmap <Plug>ToggleAutoCloseMappings :call <SID>ToggleAutoCloseMappings()<CR>
 if (!hasmapto( '<Plug>ToggleAutoCloseMappings', 'n' ))
     command! AutoCloseToggle call <SID>ToggleAutoCloseMappings()
 endif
+
+" augroup autoclosepop
+"   " this won't work since CloseStackPop() requires us to be in insert mode,
+"   " while InsertLeave only fires once we're already in normal mode.
+"   " I guess I'll just forgo any fancy cursor movement on Esc,
+"   " which is what the function seems to do.
+"   "au InsertLeave * nested call <SID>CloseStackPop('', '')
+"
+"   " TODO: At least map to something that won't mess with common actions
+"   "au VimEnter * nested {stuff below in a function?}
+"   " inoremap <silent> <C-[>MC <RIGHT>
+"   " iunmap <C-[>OC
+"   " iunmap <Esc>
+"   " iunmap <C-[>
+" augroup END
+
 fun! <SID>AutoCloseMappingsOn() " {{{2
     inoremap <silent> " <C-R>=<SID>QuoteDelim('"')<CR>
     inoremap <silent> ` <C-R>=<SID>QuoteDelim('`')<CR>
@@ -89,15 +105,17 @@ fun! <SID>AutoCloseMappingsOn() " {{{2
     inoremap <silent> <BS> <C-R>=<SID>OpenCloseBackspaceOrDel("BS")<CR>
     inoremap <silent> <C-h> <C-R>=<SID>OpenCloseBackspaceOrDel("BS")<CR>
     inoremap <silent> <Del> <C-R>=<SID>OpenCloseBackspaceOrDel("Del")<CR>
-    inoremap <silent> <Esc> <C-R>=<SID>CloseStackPop('', '')<CR><Esc>
-    inoremap <silent> <C-[> <C-R>=<SID>CloseStackPop('', '')<CR><C-[>
     inoremap <silent> {<CR> {<CR>}<C-O>O
+" Remove mappings that make escaping insert mode painful with the new delay
+    " inoremap <silent> <Esc> <C-R>=<SID>CloseStackPop('', '')<CR><Esc>
+    " inoremap <silent> <C-[> <C-R>=<SID>CloseStackPop('', '')<CR><C-[>
     "the following simply creates an ambiguous mapping so vim fully
     "processes the escape sequence for terminal keys, see 'ttimeout' for a
     "rough explanation, this just forces it to work
-    if &term[:4] == "xterm" || &term[:5] == 'screen' || &term[:3] == 'rxvt'
-      inoremap <silent> <C-[>OC <RIGHT>
-    endif
+    " if &term[:4] == "xterm" || &term[:5] == 'screen' || &term[:3] == 'rxvt'
+    "   inoremap <silent> <C-[>OC <RIGHT>
+    " endif
+
     let g:autoclose_on = 1
     let s:autoclose_mapped = 1
     echo "AutoClose On"
