@@ -77,20 +77,24 @@ if (!hasmapto( '<Plug>ToggleAutoCloseMappings', 'n' ))
     command! AutoCloseToggle call <SID>ToggleAutoCloseMappings()
 endif
 
-" augroup autoclosepop
+augroup autoclosepop
 "   " this won't work since CloseStackPop() requires us to be in insert mode,
 "   " while InsertLeave only fires once we're already in normal mode.
 "   " I guess I'll just forgo any fancy cursor movement on Esc,
-"   " which is what the function seems to do.
+"   " which is what the function seems to do. Although I think the actual Esc mapping does nothing.
+"   " If that's what it does, I think I read Vim 7.4 makes that kind of thing break anyway.
 "   "au InsertLeave * nested call <SID>CloseStackPop('', '')
-"
-"   " TODO: At least map to something that won't mess with common actions
+"   " Perhaps at least map to something that won't mess with common actions?
+"   " Will be necessary if I actually need the Esc mapping.
 "   "au VimEnter * nested {stuff below in a function?}
 "   " inoremap <silent> <C-[>MC <RIGHT>
 "   " iunmap <C-[>OC
 "   " iunmap <Esc>
 "   " iunmap <C-[>
-" augroup END
+
+    " Instead I think just clearing the stack will settle things well enough on Esc.
+    au InsertLeave * nested let s:closeStack = []
+augroup END
 
 fun! <SID>AutoCloseMappingsOn() " {{{2
     inoremap <silent> " <C-R>=<SID>QuoteDelim('"')<CR>
