@@ -77,7 +77,7 @@ if (!hasmapto( '<Plug>ToggleAutoCloseMappings', 'n' ))
     command! AutoCloseToggle call <SID>ToggleAutoCloseMappings()
 endif
 
-augroup autoclosepop
+" augroup autoclosepop
 "   " this won't work since CloseStackPop() requires us to be in insert mode,
 "   " while InsertLeave only fires once we're already in normal mode.
 "   " I guess I'll just forgo any fancy cursor movement on Esc,
@@ -93,8 +93,8 @@ augroup autoclosepop
 "   " iunmap <C-[>
 
     " Instead I think just clearing the stack will settle things well enough on Esc.
-    au InsertLeave * nested let s:closeStack = []
-augroup END
+    " au InsertLeave * nested let s:closeStack = []
+" augroup END
 
 fun! <SID>AutoCloseMappingsOn() " {{{2
     inoremap <silent> " <C-R>=<SID>QuoteDelim('"')<CR>
